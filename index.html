@@ -1,10 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ကျွန်ုပ်၏ အွန်လိုင်းဆိုင်</title>
+    <title>My Shop</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
+        .card { border: 1px solid #ccc; padding: 15px; border-radius: 10px; text-align: center; }
+    </style>
 </head>
 <body>
-    <h1>မင်္ဂလာပါ! ဒါက ကျွန်တော့်ဆိုင်လေးပါ။</h1>
-    <p>ပစ္စည်းတွေ မကြာခင် တင်ပေးပါမယ်။</p>
+    <h1 style="text-align: center;">ကျွန်ုပ်၏ Online Shop</h1>
+    <div id="product-container" class="grid"></div>
+
+    <script>
+        fetch('olist_products_dataset.csv')
+            .then(res => res.text())
+            .then(csv => {
+                const results = Papa.parse(csv, { header: true });
+                const container = document.getElementById('product-container');
+                
+                // ပစ္စည်း ၁၀ ခုပဲ ထုတ်ပြမယ်
+                results.data.slice(0, 10).forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `<h3>${product.product_category_name || 'ပစ္စည်း'}</h3>
+                                      <p>ID: ${product.product_id.slice(0,8)}</p>`;
+                    container.appendChild(card);
+                });
+            });
+    </script>
 </body>
 </html>
+
+
