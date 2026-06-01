@@ -1,34 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Shop</title>
+    <title>My Online Shop</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
-        .card { border: 1px solid #ccc; padding: 15px; border-radius: 10px; text-align: center; }
+        .card { border: 1px solid #ddd; padding: 15px; border-radius: 10px; box-shadow: 2px 2px 10px #eee; }
+        img { width: 100%; height: 150px; object-fit: cover; }
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">ကျွန်ုပ်၏ Online Shop</h1>
-    <div id="product-container" class="grid"></div>
+    <h1 style="text-align: center;">ကျွန်ုပ်၏ Amazon စတိုင် Online Shop</h1>
+    <div id="shop" class="grid"></div>
 
     <script>
-        fetch('olist_products_dataset.csv')
-            .then(res => res.text())
-            .then(csv => {
-                const results = Papa.parse(csv, { header: true });
-                const container = document.getElementById('product-container');
+        Promise.all([
+            fetch('olist_products_dataset.csv').then(res => res.text()),
+            fetch('olist_order_items_dataset.csv').then(res => res.text())
+        ]).then(([pCsv, iCsv]) => {
+            const products = Papa.parse(pCsv, { header: true }).data;
+            const items = Papa.parse(iCsv, { header: true }).data;
+            
+            const shop = document.getElementById('shop');
+            // ပစ္စည်း ၁၀၀ ကို လှည့်ပြမယ်
+            products.slice(0, 100).forEach(p => {
+                const item = items.find(i => i.product_id === p.product_id);
+                const price = item ? item.price : "ဈေးမရှိ";
                 
-                // ပစ္စည်း ၁၀ ခုပဲ ထုတ်ပြမယ်
-                results.data.slice(0, 10).forEach(product => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.innerHTML = `<h3>${product.product_category_name || 'ပစ္စည်း'}</h3>
-                                      <p>ID: ${product.product_id.slice(0,8)}</p>`;
-                    container.appendChild(card);
-                });
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="https://via.placeholder.com/200" alt="Product">
+                    <h3>${p.product_category_name || 'ပစ္စည်း'}</h3>
+                    <p>ဈေးနှုန်း: ${price} BRL</p>
+                `;
+                shop.appendChild(card);
             });
+        });
     </script>
 </body>
 </html>
+
 
