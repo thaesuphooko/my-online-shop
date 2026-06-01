@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Amazon-Style Shop</title>
+    <title>My Real Online Shop</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; padding: 20px; }
-        .card { border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center; }
-        img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
+        .card { border: 1px solid #ddd; padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        img { width: 100%; height: 180px; object-fit: cover; border-radius: 5px; }
+        h3 { font-size: 16px; margin: 10px 0; }
+        .price { color: #b12704; font-weight: bold; font-size: 18px; }
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">ကျွန်ုပ်၏ Online Shop</h1>
+    <h1 style="text-align: center;">ကျွန်ုပ်၏ Online Shop (Real Data)</h1>
     <div id="shop" class="grid"></div>
 
     <script>
@@ -22,18 +24,17 @@
             const items = Papa.parse(iCsv, { header: true }).data;
             const shop = document.getElementById('shop');
 
-            // ပစ္စည်း ၁၀၀ ကို အလိုအလျောက် ပြမယ်
             products.slice(0, 100).forEach((p, index) => {
                 const item = items.find(i => i.product_id === p.product_id);
-                const price = item ? item.price : "ဈေးမရှိ";
+                const price = item ? item.price : "0.00";
                 
                 const card = document.createElement('div');
                 card.className = 'card';
-                // API မှ ပုံကို အလိုအလျောက်ယူခြင်း (index ကို သုံးပြီး ပုံပြောင်းအောင်လုပ်ထားတယ်)
+                // ပုံအမှန်ပြချင်ရင် ဒီနေရာမှာ p.image_url လို့ သုံးပါ
                 card.innerHTML = `
                     <img src="https://picsum.photos/200?random=${index}" alt="Product">
-                    <p>${p.product_category_name || 'ပစ္စည်း'}</p>
-                    <p><b>ဈေးနှုန်း: ${price} BRL</b></p>
+                    <h3>${p.product_category_name || 'ပစ္စည်းအမည်'}</h3>
+                    <p class="price">${price} BRL</p>
                 `;
                 shop.appendChild(card);
             });
